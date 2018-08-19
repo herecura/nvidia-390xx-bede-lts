@@ -8,7 +8,7 @@ pkgver=390.77
 _extramodules=4.14-BEDE-LTS-external
 _current_linux_version=4.14.65
 _next_linux_version=4.15
-pkgrel=8
+pkgrel=9
 pkgdesc="NVIDIA drivers for linux-bede-lts, 390xx legacy branch"
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -69,7 +69,6 @@ package() {
     echo "blacklist nouveau" >> "$pkgdir/usr/lib/modprobe.d/$pkgname.conf"
     echo "blacklist nvidiafb" >> "$pkgdir/usr/lib/modprobe.d/$pkgname.conf"
 
-    # gzip all modules
-    find "$pkgdir" -name '*.ko' -exec gzip -9 {} \;
+    find "${pkgdir}" -name '*.ko' -exec xz {} +
 }
 
