@@ -8,7 +8,7 @@ pkgver=390.129
 _extramodules=4.19-BEDE-LTS-external
 _current_linux_version=4.19.83
 _next_linux_version=4.20
-pkgrel=14
+pkgrel=15
 pkgdesc="NVIDIA drivers for linux-bede-lts, 390xx legacy branch"
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -38,14 +38,11 @@ prepare() {
     sh $_pkg.run --extract-only
     cd $_folder
     # patch if needed
-    sed -i -e 's/drm_mode_connector_attach_encoder/drm_connector_attach_encoder/g' kernel/nvidia-drm/nvidia-drm-encoder.c
-    sed -i -e 's/drm_mode_connector_update_edid_property/drm_connector_update_edid_property/g' kernel/nvidia-drm/nvidia-drm-connector.c
 }
 
 build() {
-    _kernver="$(cat /usr/lib/modules/$_extramodules/version)"
     cd $_folder/kernel
-    make SYSSRC=/usr/lib/modules/$_kernver/build module
+    make SYSSRC=/usr/src/linux-bede-lts module
 }
 
 package() {
@@ -55,16 +52,17 @@ package() {
         "nvidia-390xx-utils=$pkgver"
     )
 
+    local extradir="/usr/lib/modules/$(</usr/src/linux-bede-lts/version)/extramodules"
     install -Dm644 "$srcdir/$_folder/kernel/nvidia.ko" \
-        "$pkgdir/usr/lib/modules/$_extramodules/$_pkgname/nvidia.ko"
+        "${pkgdir}${extradir}/$_pkgname/nvidia.ko"
     install -Dm644 "$srcdir/$_folder/kernel/nvidia-modeset.ko" \
-        "$pkgdir/usr/lib/modules/$_extramodules/$_pkgname/nvidia-modeset.ko"
+        "${pkgdir}${extradir}/$_pkgname/nvidia-modeset.ko"
     install -Dm644 "$srcdir/$_folder/kernel/nvidia-drm.ko" \
-        "$pkgdir/usr/lib/modules/$_extramodules/$_pkgname/nvidia-drm.ko"
+        "${pkgdir}${extradir}/$_pkgname/nvidia-drm.ko"
 
     if [[ "$CARCH" = "x86_64" ]]; then
         install -D -m644 "${srcdir}/${_folder}/kernel/nvidia-uvm.ko" \
-            "${pkgdir}/usr/lib/modules/${_extramodules}/$_pkgname/nvidia-uvm.ko"
+            "${pkgdir}${extradir}/$_pkgname/nvidia-uvm.ko"
     fi
 
     install -dm755 "$pkgdir/usr/lib/modprobe.d"
