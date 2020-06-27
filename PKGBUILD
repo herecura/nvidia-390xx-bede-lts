@@ -4,11 +4,10 @@
 
 _pkgname=nvidia
 pkgname=$_pkgname-390xx-bede-lts
-pkgver=390.132
-_extramodules=5.4-BEDE-LTS-external
-_current_linux_version=5.4.24
+pkgver=390.138
+_current_linux_version=5.4.49
 _next_linux_version=5.5
-pkgrel=28
+pkgrel=1
 pkgdesc="NVIDIA drivers for linux-bede-lts, 390xx legacy branch"
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -41,11 +40,4 @@ package() {
     echo "blacklist nouveau" >> "$pkgdir/usr/lib/modprobe.d/$pkgname.conf"
     echo "blacklist nvidiafb" >> "$pkgdir/usr/lib/modprobe.d/$pkgname.conf"
 }
-
-
-
-
-
-
-
 
